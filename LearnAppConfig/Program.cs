@@ -19,9 +19,9 @@ namespace LearnAppConfig
     {
         static async Task Main(string[] args)
         {
-            var appConfigurationName = "cloudscale-app-config";
-            var sentinalKey = "LearnAppConfig:Sentinel";
-
+            var appConfigurationName = Environment.GetEnvironmentVariable("APP_CONFIG_NAME") ?? "cloudscale-app-config";
+            var sentinelKey = "LearnAppConfig:Sentinel";
+ 
             IConfigurationRefresher configurationRefresher = null;
 
             var credential = new DefaultAzureCredential();
@@ -40,7 +40,7 @@ namespace LearnAppConfig
                                 .ConfigureKeyVault(kv => { kv.SetCredential(credential); })
                                 .ConfigureRefresh(refresh =>
                                 {
-                                    refresh.Register(sentinalKey, refreshAll: true)
+                                    refresh.Register(sentinelKey, refreshAll: true)
                                         .SetCacheExpiration(new TimeSpan(0, 0, 30));
                                 })
                                 .UseFeatureFlags();
